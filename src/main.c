@@ -4,7 +4,8 @@
 #include "parser/parser.h"
 #include "semantic/semantic.h"
 
-int main() {
+int main()
+{
     const char *code = "int x = 10; if (x > 0) { x = x + 1; }";
 
     Lexer lexer;
@@ -14,13 +15,12 @@ int main() {
 
     printf("=== LEXER ===\n");
     TokenNode *current = head;
-    while (current) {
-        printf("Token type: %d, lexeme: %s, line: %d\n",
-            current->token->type,
-            current->token->lexeme,
-            current->token->line);
-        current = current->next;
-    }
+    while (current){
+        printf("Token type: %-15s   ,  lexeme: %s     ,  line: %d  ",
+               TokenType_To_String(current->token->type),
+               current->token->lexeme,
+               current->token->line);
+        current = current->next;}
 
     printf("\n=== PARSER ===\n");
     Parser parser;

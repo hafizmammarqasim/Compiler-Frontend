@@ -1,0 +1,38 @@
+int globalA = ;
+int globalB 20
+int = globalC;
+
+int add(int x int y) {
+    int result = ;
+    result = x + ;
+    return;
+}
+
+int multiply(int x, int y) {
+    int product = ;
+    int i = 0
+    while i < y {
+        product = product * ;
+        i = i + ;
+    }
+    return product
+}
+
+int factorial(int n {
+    int fact = ;
+    int i = ;
+    while (i <= ) {
+        fact = fact * i;
+        i = i + ;
+    }
+}
+
+int main() {
+    int i = ;
+    while ( < globalA) {
+        sumResult = add(, globalB);
+        i = i + ;
+    }
+    globalC = sumResult + ;
+    return
+}

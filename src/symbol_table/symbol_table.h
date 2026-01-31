@@ -1,11 +1,20 @@
-    #ifndef SYMBOL_TABLE_H
-    #define SYMBOL_TABLE_H
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
 
-    typedef struct {
-        char name[32];
-        int value;
-    } Symbol;
+#include <stdbool.h>
 
-    void symbol_table_init(void);
+typedef struct Symbol {
+    char *name;         // Variable name 
+    char *type;         // Variable type 
+    int line_declared; 
+    struct Symbol *next;
+} Symbol;
 
-    #endif
+// Functions
+void symbol_table_init();
+bool symbol_add(const char *name, const char *type, int line);
+Symbol* symbol_lookup(const char *name);
+void print_symbol_table();
+void free_symbol_table();
+
+#endif

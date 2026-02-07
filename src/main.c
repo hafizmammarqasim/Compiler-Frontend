@@ -1,35 +1,27 @@
+/*
 #include <stdio.h>
-#include <stdlib.h>
-#include "lexer/lexer.h"
-#include "parser/parser.h"
-#include "semantic/semantic.h"
+#include "symbol_table/symbol_table.h"
 
 int main() {
-    const char *code = "int x = 10; if (x > 0) { x = x + 1; }";
+    insert_symbol("x", TYPE_INT);
 
-    Lexer lexer;
-    lexer_init(&lexer, code);
+    enter_scope();
+     // shadowing allowed
+    insert_symbol("y", TYPE_INT);
 
-    TokenNode *head = lexer_tokenize_file(&lexer);
+    Symbol* s = lookup_symbol("x");
+    if (s)
+        printf("Found x: type=%d scope=%d\n", s->type, s->scope_level);
 
-    printf("=== LEXER ===\n");
-    TokenNode *current = head;
-    while (current) {
-        printf("Token type: %d, lexeme: %s, line: %d\n",
-            current->token->type,
-            current->token->lexeme,
-            current->token->line);
-        current = current->next;
-    }
+    exit_scope();
 
-    printf("\n=== PARSER ===\n");
-    Parser parser;
-    parser_init(&parser, head);
-    parse_program(&parser);
+    if (!lookup_symbol("y"))
+        printf("y is out of scope\n");
 
-    printf("\n=== SEMANTIC ===\n");
-    semantic_analyze();
+    print_symbol_table();
 
-    free_token_list(head);
+    /* cleanup */
+   // free_symbol_table();
+
     return 0;
-}
+}*/

@@ -15,12 +15,14 @@ int main()
 
     printf("=== LEXER ===\n");
     TokenNode *current = head;
-    while (current){
-        printf("Token type: %-15s   ,  lexeme: %s     ,  line: %d  ",
+    while (current)
+    {
+        printf("Token type: %-15s ,lexeme: %s , line: %d \n",
                TokenType_To_String(current->token->type),
                current->token->lexeme,
-               current->token->line);
-        current = current->next;}
+               current->token->line );
+        current = current->next;
+    }
 
     printf("\n=== PARSER ===\n");
     Parser parser;

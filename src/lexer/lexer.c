@@ -10,6 +10,7 @@ void lexer_init(Lexer *lexer, const char *source)
     lexer->source = source;
     lexer->pos = 0;
     lexer->line = 1;
+    lexer->column = 1;
 }
 
 Token *create_token(TokenType type, char *lexeme, int line, int column)
@@ -51,25 +52,25 @@ Keyword keywords[] = {
 };
 
 Operator operators[] = {
+    {"==", TOK_EQUALITY_CHECK},
+    {"!=", TOK_NOT_EQUAL},
+    {">=", TOK_GEQUAL},
+    {"<=", TOK_LEQUAL},
     {"=", TOK_ASSIGN},
     {"+", TOK_PLUS},
     {"-", TOK_MINUS},
     {"*", TOK_STAR},
     {"/", TOK_SLASH},
-    {"==", TOK_EQUALITY_CHECK},
-    {"(", TOK_LPAREN},
-    {")", TOK_RPAREN},
     {"<", TOK_LESS},
     {">", TOK_GREATER},
-    {">=", TOK_GEQUAL},
-    {"<=", TOK_LEQUAL},
     {";", TOK_SEMICOLON},
     {"%", TOK_MODULUS},
     {"{", TOK_LBRACE},
     {"}", TOK_RBRACE},
     {",", TOK_COMMA},
     {"!", TOK_NOT},
-    {"\"", TOK_DOUBLE_QUOTE},
+    {"(", TOK_LPAREN},
+    {")", TOK_RPAREN},
     {NULL, TOK_INVALID}
 
 };
@@ -84,7 +85,7 @@ TokenType Get_Keyword_Type(const char *lexeme)
             return keywords[i].type;
         }
     }
-    return TOK_IDENTIFIER;
+    return TOK_UNKNOWN;
 };
 
 // Checks if the Token is an Operator
@@ -101,6 +102,10 @@ TokenType Get_Operator_Type(const char *lexeme)
 }
 TokenType Get_Number_Type(const char *lexeme)
 {
+    if (lexeme[0] == '\0')
+    {
+        return TOK_INVALID;
+    }
 
     for (int i = 0; lexeme[i] != '\0'; i++)
     {
@@ -131,7 +136,7 @@ TokenType Determine_Tokentype(char *lexeme)
     TokenType type;
 
     type = Get_Keyword_Type(lexeme);
-    if (type != TOK_IDENTIFIER)
+    if (type != TOK_UNKNOWN)
         return type;
 
     type = Get_Operator_Type(lexeme);
@@ -176,14 +181,53 @@ TokenNode *lexer_tokenize_file(Lexer *lexer)
         }
         int start_column = lexer->column;
         int start_pos = lexer->pos;
-        TokenType type;
 
-        if (ispunct(lexer->source[lexer->pos]))
+        if (c == '"')
+        {
+            lexer->pos++;
+            lexer->column++;
+            int start = lexer->pos;
+
+            while (lexer->source[lexer->pos] && lexer->source[lexer->pos] != '"')
+            {
+                lexer->pos++;
+                lexer->column++;
+            }
+
+            if (lexer->source[lexer->pos] != '"')
+            {
+                fprintf(stderr, "Unterminated string at line %d\n", lexer->line);
+                break;
+            }
+
+            int len = lexer->pos - start;
+            char *lex = malloc(len + 1);
+            strncpy(lex, lexer->source + start, len);
+            lex[len] = '\0';
+
+            lexer->pos++;
+            lexer->column++;
+
+            Token *t = create_token(TOK_STRING, lex, lexer->line, start_column);
+            TokenNode *n = malloc(sizeof(TokenNode));
+            n->token = t;
+            n->next = NULL;
+            if (!head)
+                head = tail = n;
+            else
+            {
+                tail->next = n;
+                tail = n;
+            }
+            continue;
+        }
+
+        if (strchr("=+-*/<>:{}(),!%;\"", lexer->source[lexer->pos]))
         {
             // Check for double operators like '==' or '<='
             char c = lexer->source[lexer->pos];
-            char next = lexer->source[lexer->pos + 1];
-            if ((c == '=' || c == '<' || c == '>') && next == '=')
+            char next = lexer->source[lexer->pos + 1] ? lexer->source[lexer->pos + 1] : '\0';
+            if ((c == '=' || c == '<' || c == '>' || c == '!') && next == '=')
             {
 
                 lexer->pos += 2;
@@ -201,7 +245,7 @@ TokenNode *lexer_tokenize_file(Lexer *lexer)
             // It's a word or number: stop at whitespace OR when hitting an operator
             while (lexer->source[lexer->pos] != '\0' &&
                    !isspace(lexer->source[lexer->pos]) &&
-                   !ispunct(lexer->source[lexer->pos]))
+                   !strchr("=+-*/<>:{}(),!%;\"", lexer->source[lexer->pos]))
             {
                 lexer->pos++;
                 lexer->column++;
@@ -213,10 +257,13 @@ TokenNode *lexer_tokenize_file(Lexer *lexer)
         strncpy(lexeme, lexer->source + start_pos, TOK_length);
         lexeme[TOK_length] = '\0';
 
-        type = Determine_Tokentype(lexeme);
+        TokenType type = Determine_Tokentype(lexeme);
         if (type == TOK_UNKNOWN)
         {
-            fprintf(stderr, "Lexical Error: Unrecognized symbol '%s' at line %d, column %d\n", lexeme, lexer->line, start_column);
+            fprintf(stderr, "Lexical Error: Unrecognized symbol '%s' at line %d, column %d\n",
+                    lexeme, lexer->line, start_column);
+            free(lexeme);
+            continue;
         }
         Token *token = create_token(type, lexeme, lexer->line, start_column);
 
@@ -310,10 +357,10 @@ const char *TokenType_To_String(TokenType type)
         return "TOK_COMMA";
     case TOK_NOT:
         return "TOK_NOT";
-    case TOK_DOUBLE_QUOTE:
-        return "TOK_DOUBLE_QUOTE";
     case TOK_MODULUS:
         return "TOK_MODULUS";
+    case TOK_STRING:
+        return "TOK_STRING";
     case TOK_UNKNOWN:
         return "TOK_UNKNOWN";
     default:

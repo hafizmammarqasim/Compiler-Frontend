@@ -6,14 +6,16 @@ typedef enum
     TOK_EOF,
     TOK_INVALID,
     TOK_UNKNOWN,
+    TOK_STRING,
     TOK_IDENTIFIER,
     TOK_NUMBER, // a digit (i.e 5)
-    TOK_INT,         // keyword int
+    TOK_INT,    // keyword int
     TOK_IF,
     TOK_BREAK,
     TOK_CONTINUE,
     TOK_PRINT,
     TOK_WHILE,
+    TOK_RETURN,
     TOK_ASSIGN,         // =
     TOK_PLUS,           // +
     TOK_MINUS,          // -
@@ -27,12 +29,12 @@ typedef enum
     TOK_LEQUAL,         //<=
     TOK_GEQUAL,         //>=
     TOK_EQUALITY_CHECK, //==
+    TOK_NOT_EQUAL,      //!=
     TOK_LBRACE,         //{
     TOK_RBRACE,         //}
     TOK_MODULUS,        // %
     TOK_COMMA,          // ,
     TOK_NOT,            //!
-    TOK_DOUBLE_QUOTE    //"
 } TokenType;
 
 typedef struct

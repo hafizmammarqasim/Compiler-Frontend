@@ -46,6 +46,7 @@ Keyword keywords[] = {
     {"continue", TOK_CONTINUE},
     {"print", TOK_PRINT},
     {"while", TOK_WHILE},
+    {"return", TOK_RETURN},
     {NULL, TOK_INVALID} // mark the end of input
 };
 
@@ -273,6 +274,8 @@ const char *TokenType_To_String(TokenType type)
         return "TOK_PRINT";
     case TOK_WHILE:
         return "TOK_WHILE";
+    case TOK_RETURN:
+        return "TOK_RETURN";
     case TOK_ASSIGN:
         return "TOK_ASSIGN";
     case TOK_PLUS:

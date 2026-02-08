@@ -14,6 +14,7 @@ typedef enum
     TOK_CONTINUE,
     TOK_PRINT,
     TOK_WHILE,
+    TOK_RETURN,
     TOK_ASSIGN,         // =
     TOK_PLUS,           // +
     TOK_MINUS,          // -

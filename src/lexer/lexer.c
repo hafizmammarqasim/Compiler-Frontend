@@ -48,7 +48,7 @@ Keyword keywords[] = {
     {"print", TOK_PRINT},
     {"while", TOK_WHILE},
     {"return", TOK_RETURN},
-    {NULL, TOK_INVALID} // mark the end of input
+    {NULL, TOK_INVALID} 
 };
 
 Operator operators[] = {
@@ -130,7 +130,7 @@ TokenType Get_Identifier_Type(const char *lexeme)
     return TOK_IDENTIFIER;
 }
 
-// Determine the Token Type
+// Check the Token Type
 TokenType Determine_Tokentype(char *lexeme)
 {
     TokenType type;
@@ -364,7 +364,7 @@ const char *TokenType_To_String(TokenType type)
     case TOK_UNKNOWN:
         return "TOK_UNKNOWN";
     default:
-        return "INVALID_ENUM_VALUE"; // If the code hits this, something is really wrong
+        return "INVALID_ENUM_VALUE"; 
 
         break;
     }

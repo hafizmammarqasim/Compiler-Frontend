@@ -1,6 +1,8 @@
 #ifndef SEMANTIC_H
 #define SEMANTIC_H
 
-void semantic_analyze(void);
+#include "../parser/parser.h"
+
+void semantic_analyze(ASTNode *root);
 
 #endif

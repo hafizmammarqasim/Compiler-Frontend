@@ -47,13 +47,13 @@ ASTNode* parse_factor(Parser *p) {
 
     if (check(p, TOK_NUMBER)) {
         ASTNode *node = create_node(NODE_NUMBER);
-        node->text = strdup(t->lexeme); // Save the number 
+        node->text = strdup(t->lexeme);
         eat(p, TOK_NUMBER);
         return node;
     } 
     else if (check(p, TOK_IDENTIFIER)) {
         ASTNode *node = create_node(NODE_VARIABLE);
-        node->text = strdup(t->lexeme); // Save the name
+        node->text = strdup(t->lexeme); 
         eat(p, TOK_IDENTIFIER);
         return node;
     } 
@@ -134,7 +134,7 @@ ASTNode* parse_statement(Parser *p) {
         eat(p, TOK_SEMICOLON);
         return node;
     }
-    // 2. Print Statement: print x;
+    
     else if (check(p, TOK_PRINT)) {
         eat(p, TOK_PRINT);
         ASTNode *node = create_node(NODE_PRINT);
@@ -142,7 +142,7 @@ ASTNode* parse_statement(Parser *p) {
         eat(p, TOK_SEMICOLON);
         return node;
     }
-    // 3. While Loop: while (x < 10) { ... }
+    
     else if (check(p, TOK_WHILE)) {
         eat(p, TOK_WHILE);
         eat(p, TOK_LPAREN);
@@ -154,7 +154,7 @@ ASTNode* parse_statement(Parser *p) {
         node->body = parse_block(p);
         return node;
     }
-    // 4. If Statement: if (x > 10) { ... }
+   
     else if (check(p, TOK_IF)) {
         eat(p, TOK_IF);
         eat(p, TOK_LPAREN);
@@ -166,7 +166,11 @@ ASTNode* parse_statement(Parser *p) {
         node->body = parse_block(p);
         return node;
     }
-    // 5. Assignment: x = 10;
+    
+    else if (check(p, TOK_LBRACE)) {
+        return parse_block(p);
+    }
+    
     else if (check(p, TOK_IDENTIFIER)) {
         Token *id = current_token(p);
         eat(p, TOK_IDENTIFIER);
@@ -211,7 +215,7 @@ ASTNode* parse_block(Parser *p) {
     return block;
 }
 
-// --- Entry Point ---
+// Entry Point
 
 void parser_init(Parser *p, TokenNode *head) {
     p->current = head;

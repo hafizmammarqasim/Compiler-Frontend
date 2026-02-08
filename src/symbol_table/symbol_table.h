@@ -1,20 +1,33 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
-#include <stdbool.h>
+#include <stddef.h>
+
+
+typedef enum {
+    TYPE_INT,
+    TYPE_ERROR
+} DataType;
 
 typedef struct Symbol {
-    char *name;         // Variable name 
-    char *type;         // Variable type 
-    int line_declared; 
-    struct Symbol *next;
+    char name[32];
+    DataType type;
+    int scope_level;
+    struct Symbol* next;
 } Symbol;
 
-// Functions
-void symbol_table_init();
-bool symbol_add(const char *name, const char *type, int line);
-Symbol* symbol_lookup(const char *name);
-void print_symbol_table();
-void free_symbol_table();
+/* Scope control */
+void enter_scope(void);
+void exit_scope(void);
+
+/* Symbol operations */
+void insert_symbol(const char* name, DataType type);
+Symbol* lookup_symbol(const char* name);
+Symbol* lookup_current_scope(const char* name);
+
+void print_symbol_table(void);
+
+/* Cleanup */
+void free_symbol_table(void);
 
 #endif

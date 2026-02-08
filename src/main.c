@@ -1,8 +1,6 @@
+/*
 #include <stdio.h>
-#include <stdlib.h>
-#include "lexer/lexer.h"
-#include "parser/parser.h"
-#include "semantic/semantic.h"
+#include "symbol_table/symbol_table.h"
 
 // Helper to print indentation for the Tree
 void print_indent(int level) {
